@@ -24,7 +24,7 @@ Still unrun: three-host RSS/compaction/recovery sizing, physical BookKeeper/Cand
 
 ## Packaging and runtime smoke
 
-The exact-source dependency build and POM-only modification guard passed. Runtime packaging includes explicit Curator/ZooKeeper client libraries, native client, HTTP/value code, operator tools and configuration examples; no bookie/owner/test fixtures, compiler, Maven cache or browser tooling are included. `scripts/package.sh` verifies that exactly the pinned client JAR is present. Normalized tar metadata makes packing deterministic for the same built inputs. Full cluster/admin distribution remains separate.
+The exact-source dependency build and POM-only modification guard passed. Runtime packaging includes explicit Curator/ZooKeeper client libraries, native client, HTTP/value code, operator tools and configuration examples; no bookie/owner/test fixtures, compiler, Maven cache or browser tooling are included. `make package` verifies that exactly the pinned client JAR is present. Normalized tar metadata makes packing deterministic for the same built inputs. Full cluster/admin distribution remains separate.
 
 The packaged production `Main` connected to the private local cluster, passed `/readyz`, and completed namespace creation, PUT/GET/DELETE with wildcard CORS. A value written through it was read through the independent native browser HTTP fixture, confirming shared backend state rather than a memory fallback. No public endpoint was deployed.
 
@@ -42,3 +42,11 @@ These exclude the JDK, owner/bookie/ZooKeeper server/admin processes. They do no
 Native open-loop harness smoke: five seconds at 10 offered requests/s, seed 20261107, 50 requests, zero errors/drops, p50/p95/p99 approximately 12.03/28.17/52.52 ms (fixed histogram upper edges). Uses the generous-limit loopback fixture and real storage, not the production per-IP budgets. This is a short harness check, not sustainable throughput, three-VM sizing or soak evidence.
 
 Final runtime SHA-256: `fbfdddbfb7ec11a98c3bc4618f030c946b59efbf35b626915f0a70a014927b3b`. Package checksum inventory passed; test fakes/raw adapters and BookKeeper server artifacts are absent from the HTTP runtime.
+
+## Portable build tooling follow-up
+
+The Makefile is the supported checkout interface: `make build`, `make test`, `make package`, `make demo`, `make examples`, `make browser-test` and `make run`; see `make help`. Scripts remain implementation details and installed runtime entry points. Packaging no longer invokes system tar: Python `tarfile`/`gzip` write sorted entries with normalized ownership, mode and timestamps, including a fixed gzip header. This avoids the unsupported GNU `--sort` flag on macOS BSD tar. Production run-script boot identity also tolerates hosts without Linux `/proc`, preserving a supplied ID or using `unknown`.
+
+Tool regressions validate payloads/long paths, executable permissions, normalized headers, deterministic output despite host mtime/mode changes, and atomic preservation of an existing archive on unsupported inputs. Tests execute on Linux; no macOS/ARM64 host run is claimed. Historical artifact sizes/checksums above predate this packer.
+
+Executed follow-up checks: `make build` passed all 14 application/HTTP/transport tests and both real-backend integration tests; `make test-tools` passed all 13 archive/packaging tests. `make package` also passed with a deliberately failing system-tar executable first on PATH, without invoking it. Two packs of identical inputs produced identical bytes. Independent system-tar extraction verified every SHA256SUMS entry and executable launch-script permissions. Current archive: 20,337,954 bytes, SHA-256 `9cd73db5fea8d8d24bc868f4a65eab11fe009d8843b0cc8f88090afa8a0b39fc`. Actual macOS execution remains unverified.

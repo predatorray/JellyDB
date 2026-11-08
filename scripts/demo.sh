@@ -2,10 +2,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 : "${MVN:=mvn}"
+: "${JAVA:=java}"
 # Test-only real storage: temporary ZooKeeper, three bookies, one Candybox owner.
-# Run scripts/build.sh once first to install the exact pinned upstream dependencies.
+# Run make build once first to install the exact pinned upstream dependencies.
 "$MVN" -B -ntp test-compile dependency:build-classpath -Dmdep.outputFile=target/test-classpath.txt
-exec java -XX:ActiveProcessorCount=2 -Xmx768m \
+exec "$JAVA" -XX:ActiveProcessorCount=2 -Xmx768m \
   --add-opens java.base/java.io=ALL-UNNAMED \
   --add-opens java.base/java.lang=ALL-UNNAMED \
   --add-opens java.base/java.nio=ALL-UNNAMED \

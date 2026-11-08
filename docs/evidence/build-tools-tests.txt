@@ -1,0 +1,5 @@
+make build MVN=/workspace/tools/mvn-cloud: passed (14 application tests, 2 real-backend ITs).
+make test-tools: passed (9 archive tests, 4 portable-packaging tests).
+make package with failing system tar first on PATH: passed; tar not invoked.
+Repacked bytes identical; independent system-tar extraction and all checksums passed.
+Actual macOS/ARM64 host run: not performed.

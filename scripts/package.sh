@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-commit="$(python3 -c 'import json; print(json.load(open("candybox.lock"))["commit"])')"
-python3 - <<'PYCHECK'
+: "${PYTHON:=python3}"
+commit="$("$PYTHON" -c 'import json; print(json.load(open("candybox.lock"))["commit"])')"
+"$PYTHON" - <<'PYCHECK'
 import json,pathlib
 pin=json.loads(pathlib.Path('candybox.lock').read_text())
 jars=list(pathlib.Path('target/lib').glob('candybox-client-*.jar'))
@@ -18,10 +19,10 @@ cp ops/*.service ops/*.timer ops/*.example ops/*.conf ops/*.cfg ops/*.properties
 cp examples/* target/runtime/share/examples/
 cp docs/operations.md docs/upstream-blocker.md target/runtime/share/docs/
 printf '%s\n' "$commit" > target/runtime/CANDYBOX_COMMIT
-python3 - <<'PYHASH'
+"$PYTHON" - <<'PYHASH'
 import hashlib, pathlib
 root=pathlib.Path('target/runtime')
 files=sorted(p for p in root.rglob('*') if p.is_file() and p.name!='SHA256SUMS')
 (root/'SHA256SUMS').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(root))+'\n' for p in files))
 PYHASH
-tar --sort=name --mtime='2026-11-07 00:00:00Z' --owner=0 --group=0 --numeric-owner --mode='u+rwX,go+rX' -czf target/jellydb-runtime.tar.gz -C target/runtime .
+"$PYTHON" scripts/create-archive.py target/runtime target/jellydb-runtime.tar.gz

@@ -4,32 +4,32 @@ The easiest first test runs real Candybox locally with temporary storage. Deploy
 
 ## 1. Build and run automated tests
 
-Use Linux/WSL with JDK 17+ (including `javac`), Maven 3.9+, Git, Python 3 and GNU tar. The tested build used JDK 21. Internet access is needed for the pinned Candybox source and Maven dependencies.
+For local builds use macOS or Linux/WSL with Make, JDK 17+ (including `javac`), Maven 3.9+, Git and Python 3. Packaging uses Python’s standard library rather than platform-specific tar flags. Production systemd deployment remains Linux-only. The tested build used JDK 21. Internet access is needed for the pinned Candybox source and Maven dependencies.
 
 ```sh
 git clone https://github.com/predatorray/JellyDB.git
 cd JellyDB
 git switch main
-./scripts/build.sh
-(cd tools && python3 -m unittest -v test_archive.py)
+make build
+make test-tools
 ```
 
-The build compiles the exact source revision in `candybox.lock`, runs application tests plus real ZooKeeper/BookKeeper/Candybox integration, and creates `target/jellydb-runtime.tar.gz`. It starts temporary local services for tests; no pre-existing cluster or real SMTP account is needed. Set `MVN=/absolute/path/to/mvn` if Maven is not on PATH. After the first build, `mvn verify` reruns Java tests without rebuilding upstream.
+The build compiles the exact source revision in `candybox.lock`, runs application tests plus real ZooKeeper/BookKeeper/Candybox integration, and creates `target/jellydb-runtime.tar.gz`. It starts temporary local services for tests; no pre-existing cluster or real SMTP account is needed. Use `make build MVN=/absolute/path/to/mvn` if Maven is not on PATH; `PYTHON` and `JAVA` are executable overrides too. After the first build, `make test` runs Java/integration and Python tool tests without rebuilding upstream. `make test-java` and `make test-tools` run each suite separately. If Java already built successfully and only packaging failed (including the old macOS `tar --sort` error), run `make package` to retry packaging without Maven. `make clean` removes generated Maven outputs but preserves the downloaded upstream checkout.
 
 ## 2. Try the API and browser example locally
 
 In the first terminal:
 
 ```sh
-./scripts/demo.sh
+make demo
 ```
 
-Wait for `NATIVE_BROWSER_READY`. This test fixture runs real temporary ZooKeeper, three bookies, one Candybox owner and the native HTTP adapter. It uses a 768 MiB Java heap cap; allow extra memory for native allocations and the OS. It is a development fixture, not the persistent production topology or evidence that the full VM budget fits.
+Wait for `NATIVE_BROWSER_READY`. Set `PORT=8090` to use a different API port (`make demo PORT=8090`). Set `EXAMPLES_PORT` for the static page and pass the same port overrides to `make browser-test`. This test fixture runs real temporary ZooKeeper, three bookies, one Candybox owner and the native HTTP adapter. It uses a 768 MiB Java heap cap; allow extra memory for native allocations and the OS. It is a development fixture, not the persistent production topology or evidence that the full VM budget fits.
 
 In a second terminal, from the repository root:
 
 ```sh
-python3 -m http.server 8081 --bind 127.0.0.1 --directory examples
+make examples
 ```
 
 Open <http://127.0.0.1:8081> and click **Run example**. The page calls the API on port 8080, exercising actual cross-origin requests.
@@ -50,7 +50,7 @@ curl -fsS http://127.0.0.1:8080/v1/namespaces/YOUR_NAMESPACE_ID/keys
 Optional automated Chromium checks require the Python `playwright` package and an installed Chromium browser. Set `CHROMIUM_PATH` if it is not discoverable as `chromium`, then run:
 
 ```sh
-python3 tools/browser_test.py --backend-label native-candybox
+make browser-test
 ```
 
 Stop the fixture and static server with Ctrl-C. Do not use the temporary fixture to keep valuable data.
@@ -65,7 +65,7 @@ From the build machine, or as a private smoke test:
 JELLY_ZK_CONNECT=10.20.0.11:2181,10.20.0.12:2181,10.20.0.13:2181 \
 JELLY_BOX=jellydb-v1 JELLY_PARTITIONS=8 \
 JELLY_BIND=127.0.0.1 JELLY_PORT=8080 \
-JELLY_RUNTIME="$PWD/target/runtime" ./scripts/run.sh
+make run
 ```
 
 Replace the private addresses. Startup creates the single shared managed Box if absent and rejects a legacy Box or mismatched partition count. The configured cluster identity needs namespace and maintenance permissions. Optional ZooKeeper authentication belongs in protected host configuration, not browser code.
