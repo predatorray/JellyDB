@@ -1,0 +1,7 @@
+Full clean verify: 14 application/HTTP/transport tests + 2 real-backend ITs, no failures/skips.
+Targeted strengthened rerun: DeadlineTransportTest + ManagedNamespacesIT passed.
+Upstream NamespaceEngineTest: 12 tests passed.
+Archive local SMTP: 9 tests passed.
+Chromium cross-origin/opaque-origin with real Candybox: passed.
+Packaged Main shared-backend readiness/CRUD/CORS: passed.
+BookKeeper targeted-rerun teardown diagnostic preserved; see verification report.

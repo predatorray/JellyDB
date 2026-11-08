@@ -1,0 +1,22 @@
+{
+  "crossOrigin": {
+    "namespace": "ZdDAZ9KMDf5XBFU-t7-mTQ",
+    "keys": [
+      "",
+      "null",
+      "\ud83d\ude00/%"
+    ],
+    "errors": [
+      400,
+      415,
+      413
+    ],
+    "preflight": 204
+  },
+  "opaqueOrigin": {
+    "opaqueTest": true,
+    "status": 201,
+    "id": "NkdnofJZnwTw4_wMWuiLjA"
+  },
+  "scope": "local HTTP + native-candybox backend; public HTTPS launch drill pending"
+}

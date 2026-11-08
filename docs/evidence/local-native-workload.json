@@ -1,0 +1,18 @@
+{
+  "requests": 50,
+  "errors": 0,
+  "missingReads": 0,
+  "putBytes": 20200,
+  "build": "c6392d5-native-adapter",
+  "configSha256": "local-embedded-fixture",
+  "seed": 20261107,
+  "rate": 10.0,
+  "seconds": 5,
+  "harnessDrops": 0,
+  "p50Ms": 12.029100556862495,
+  "p95Ms": 28.17062352545879,
+  "p99Ms": 52.52411720829458,
+  "clientMaxRssKiB": 17920,
+  "corpus": "repeated x",
+  "limitations": "Fixed ~1% histogram; host disk/RSS/recovery/archive metrics collected separately. 404 reads after deletes reported separately, never assumed expiry."
+}

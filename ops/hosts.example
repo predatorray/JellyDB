@@ -1,0 +1,4 @@
+# Explicit private addresses; replace TEST-NET placeholders before use.
+10.20.0.11 jelly-1
+10.20.0.12 jelly-2
+10.20.0.13 jelly-3

@@ -1,0 +1,171 @@
+openapi: 3.1.0
+info:
+  title: JellyDB experimental public string storage
+  version: 0.1.0
+  description: |
+    Anyone knowing an address may read or change its data. Namespace IDs are not credentials.
+    Uses Candybox managed namespaces with owner-fenced atomic renewal and conditional retirement.
+    Successful PUT renews every item in a namespace for seven days; reads and deletes do not.
+    A timeout may mean the mutation committed. Do not automatically replay ambiguous writes.
+    Expiry uses authoritative owner admission time with synchronized-clock assumptions; forward clock jumps can expire data early.
+servers:
+  - url: https://storage.example.invalid
+security: []
+paths:
+  /v1/namespaces:
+    post:
+      operationId: createNamespace
+      description: Empty request body. Creates a random 128-bit address and starts seven-day expiry.
+      responses:
+        '201':
+          description: Created
+          headers:
+            X-Expires-At: {$ref: '#/components/headers/Expires'}
+            X-Request-ID: {$ref: '#/components/headers/RequestId'}
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Namespace'}
+        default: {$ref: '#/components/responses/Error'}
+  /v1/namespaces/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+    get:
+      operationId: inspectNamespace
+      responses:
+        '200':
+          description: Authoritative lifecycle metadata; does not renew
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Namespace'}
+        default: {$ref: '#/components/responses/Error'}
+  /v1/namespaces/{id}/items/{encodedKey}:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+      - name: encodedKey
+        in: path
+        required: true
+        description: "Tilde followed by canonical unpadded base64url of strict UTF-8 (<=256 bytes). Empty key is ~. No percent encoding."
+        schema: {type: string, pattern: '^~[A-Za-z0-9_-]*$', maxLength: 343}
+    get:
+      operationId: getItem
+      responses:
+        '200':
+          description: String value, including empty string or the string null
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Value'}
+        default: {$ref: '#/components/responses/Error'}
+    put:
+      operationId: putItem
+      description: Atomic item and namespace renewal required. Owner/HLC last-writer-wins; not caller clock order. No automatic mutation retry.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Value'}
+      responses:
+        '204':
+          description: Backend acknowledged; namespace renewal durably committed
+          headers:
+            X-Expires-At: {$ref: '#/components/headers/Expires'}
+        default: {$ref: '#/components/responses/Error'}
+    delete:
+      operationId: removeItem
+      description: Missing item is idempotently removed within a live namespace; missing/expired namespace is 404. Does not renew.
+      responses:
+        '204': {description: Removed}
+        default: {$ref: '#/components/responses/Error'}
+  /v1/namespaces/{id}/items:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+    delete:
+      operationId: clearNamespace
+      description: Non-atomic across bounded batches. At most 32 pages of 100 items and eight seconds between calls; 503 clear_incomplete may leave partial progress. Repeating clear continues removal. Concurrent writes may survive or be removed. Does not renew.
+      responses:
+        '204': {description: Clear completed}
+        default: {$ref: '#/components/responses/Error'}
+  /v1/namespaces/{id}/keys:
+    parameters:
+      - {$ref: '#/components/parameters/Id'}
+    get:
+      operationId: listKeys
+      description: Non-snapshot namespace-local listing. A failed backend list is 503, never an empty page.
+      parameters:
+        - name: limit
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 100, default: 100}
+        - name: cursor
+          in: query
+          description: Opaque canonical base64url namespace-bound continuation, <=512 characters. Not a credential.
+          schema: {type: string, maxLength: 512}
+      responses:
+        '200':
+          description: Bounded page of decoded original string keys
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [keys, nextCursor]
+                properties:
+                  keys: {type: array, maxItems: 100, items: {type: string}}
+                  nextCursor: {type: [string, 'null']}
+        default: {$ref: '#/components/responses/Error'}
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: {type: string, pattern: '^[A-Za-z0-9_-]{22}$'}
+  headers:
+    RequestId: {description: Server-generated request identity, schema: {type: string}}
+    Expires: {description: Authoritative ISO 8601 UTC expiration, schema: {type: string, format: date-time}}
+  schemas:
+    Value:
+      type: object
+      additionalProperties: false
+      required: [value]
+      properties:
+        value:
+          type: string
+          description: <=1 MiB strict UTF-8 after JSON unescaping. Entire wire body <=6 MiB + 1024 bytes. Reject duplicate fields, unpaired surrogates and nesting >16. Embedded JSON remains uninterpreted.
+    Namespace:
+      type: object
+      required: [id, url, createdAt, expiresAt, idleTtlSeconds, limits, notice]
+      properties:
+        id: {type: string}
+        url: {type: string}
+        createdAt: {type: integer, format: int64, description: UTC Unix milliseconds}
+        expiresAt: {type: integer, format: int64, description: UTC Unix milliseconds; at equality namespace is expired}
+        idleTtlSeconds: {type: integer, const: 604800}
+        limits: {type: object, additionalProperties: {type: integer}}
+        notice: {type: string}
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, requestId]
+          properties:
+            code: {type: string}
+            message: {type: string}
+            requestId: {type: string}
+  responses:
+    Error:
+      description: |
+        400 validation, 404 authoritative missing/expired, 405 method, 409 namespace address already used,
+        413 oversized body/value, 415 media/encoding, 429 throttling,
+        503 backend/capacity/corruption/readiness/partial clear. Retry-After on 429/503.
+        All application responses include Cache-Control:no-store, X-Request-ID,
+        Access-Control-Allow-Origin:* and expose X-Request-ID, X-Expires-At, Retry-After.
+        OPTIONS is supported without credentials with GET/PUT/POST/DELETE;
+        allowed request headers Content-Type, X-Request-ID. Proxy errors must preserve the same contract.
+      headers:
+        X-Request-ID: {$ref: '#/components/headers/RequestId'}
+        Retry-After: {schema: {type: integer}, description: Seconds before retrying; not permission to replay ambiguous mutations}
+        Cache-Control: {schema: {type: string, const: no-store}}
+        Access-Control-Allow-Origin: {schema: {type: string, const: '*'}}
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}

@@ -1,0 +1,18 @@
+{
+  "requests": 50,
+  "errors": 0,
+  "missingReads": 0,
+  "putBytes": 20200,
+  "build": "implementation-preview",
+  "configSha256": "local-test-fake",
+  "seed": 20261107,
+  "rate": 10.0,
+  "seconds": 5,
+  "harnessDrops": 0,
+  "p50Ms": 7.66439236192572,
+  "p95Ms": 16.044785022367712,
+  "p99Ms": 26.754847370568257,
+  "clientMaxRssKiB": 18048,
+  "corpus": "repeated x",
+  "limitations": "Fixed ~1% histogram; host disk/RSS/recovery/archive metrics collected separately. 404 reads after deletes reported separately, never assumed expiry."
+}

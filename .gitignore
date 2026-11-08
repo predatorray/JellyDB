@@ -1,0 +1,7 @@
+target/
+.tools/
+.upstream/
+.env
+__pycache__/
+*.pyc
+reports/local/

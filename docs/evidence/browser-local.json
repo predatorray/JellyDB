@@ -1,0 +1,22 @@
+{
+  "crossOrigin": {
+    "namespace": "kbEqUSEAyVPvCl91GxwBMg",
+    "keys": [
+      "",
+      "null",
+      "\ud83d\ude00/%"
+    ],
+    "errors": [
+      400,
+      415,
+      413
+    ],
+    "preflight": 204
+  },
+  "opaqueOrigin": {
+    "opaqueTest": true,
+    "status": 201,
+    "id": "JbT_tQ8_DvBNgXw22Lxyug"
+  },
+  "scope": "local HTTP + fake backend; public HTTPS launch drill pending"
+}

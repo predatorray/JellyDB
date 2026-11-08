@@ -1,0 +1,33 @@
+# Caddy 2.9.1; package checksum and ACME route must be verified at deployment.
+# DNS points clients to multiple hosts, but callers need explicit fallback on connection failure.
+storage.example.invalid {
+    header {
+        Access-Control-Allow-Origin "*"
+        Access-Control-Allow-Methods "OPTIONS, GET, PUT, POST, DELETE"
+        Access-Control-Allow-Headers "Content-Type, X-Request-ID"
+        Access-Control-Expose-Headers "X-Request-ID, X-Expires-At, Retry-After"
+        Cache-Control "no-store"
+        ?X-Request-ID "{http.request.uuid}"
+    }
+    request_body { max_size 6292480 }
+    reverse_proxy 127.0.0.1:8080 {
+        transport http { dial_timeout 1s; response_header_timeout 18s }
+        # Preserve the application's request ID when it supplies one.
+        header_down -Server
+    }
+    handle_errors {
+        header Content-Type application/json
+        respond `{"error":{"code":"proxy_unavailable","message":"Ingress request failed; mutation outcome may be unknown","requestId":"{http.request.uuid}"}}` {err.status_code}
+    }
+    log {
+        output stdout
+        format filter {
+            wrap json
+            fields {
+                request>uri delete
+                request>headers delete
+                resp_headers delete
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion><groupId>dev.jellydb</groupId><artifactId>jellydb</artifactId><version>0.1.0-SNAPSHOT</version>
+  <properties><maven.compiler.release>17</maven.compiler.release><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding><project.build.outputTimestamp>2026-11-07T00:00:00Z</project.build.outputTimestamp><candybox.version>0.2.0-jelly-c6392d5</candybox.version></properties>
+  <dependencyManagement><dependencies>
+    <dependency><groupId>io.netty</groupId><artifactId>netty-bom</artifactId><version>4.1.118.Final</version><type>pom</type><scope>import</scope></dependency>
+    <dependency><groupId>com.fasterxml.jackson</groupId><artifactId>jackson-bom</artifactId><version>2.18.2</version><type>pom</type><scope>import</scope></dependency>
+  </dependencies></dependencyManagement>
+  <dependencies>
+    <dependency><groupId>me.predatorray.candybox</groupId><artifactId>candybox-client</artifactId><version>${candybox.version}</version></dependency>
+    <dependency><groupId>io.netty</groupId><artifactId>netty-codec-http</artifactId></dependency>
+    <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId></dependency>
+    <dependency><groupId>ch.qos.logback</groupId><artifactId>logback-classic</artifactId><version>1.5.6</version></dependency>
+    <dependency><groupId>org.apache.curator</groupId><artifactId>curator-framework</artifactId><version>5.6.0</version></dependency>
+    <dependency><groupId>org.apache.curator</groupId><artifactId>curator-recipes</artifactId><version>5.6.0</version></dependency>
+    <dependency><groupId>org.apache.zookeeper</groupId><artifactId>zookeeper</artifactId><version>3.9.2</version></dependency>
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>5.10.2</version><scope>test</scope></dependency>
+    <dependency><groupId>me.predatorray.candybox</groupId><artifactId>candybox-server</artifactId><version>${candybox.version}</version><scope>test</scope></dependency>
+    <dependency><groupId>org.apache.curator</groupId><artifactId>curator-test</artifactId><version>5.6.0</version><scope>test</scope></dependency>
+  </dependencies>
+  <build><plugins>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.13.0</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.2.5</version><configuration><argLine>-XX:ActiveProcessorCount=2 --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED</argLine></configuration></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId><version>3.2.5</version><executions><execution><goals><goal>integration-test</goal><goal>verify</goal></goals></execution></executions><configuration><argLine>-XX:ActiveProcessorCount=2 --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED</argLine></configuration></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId><version>3.7.1</version><executions><execution><id>runtime</id><phase>package</phase><goals><goal>copy-dependencies</goal></goals><configuration><includeScope>runtime</includeScope><outputDirectory>${project.build.directory}/lib</outputDirectory></configuration></execution></executions></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-jar-plugin</artifactId><version>3.4.1</version><configuration><archive><manifest><mainClass>dev.jellydb.Main</mainClass></manifest></archive></configuration></plugin>
+  </plugins></build>
+</project>

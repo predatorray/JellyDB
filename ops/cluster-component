@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Installed pinned distribution libraries are shared, not copied per process.
+export JELLY_SERVICE="$1"
+export JELLY_BOOT_ID="$(cat /proc/sys/kernel/random/boot_id)"
+case "$1" in
+zookeeper) exec java --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED -Xms32m -Xmx96m -Xss256k -cp '/opt/jellydb/cluster/lib/*' org.apache.zookeeper.server.quorum.QuorumPeerMain /etc/jellydb/zoo.cfg ;;
+bookkeeper) exec java --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED -Xms32m -Xmx160m -XX:MaxDirectMemorySize=64m -Xss256k -cp '/opt/jellydb/cluster/lib/*' org.apache.bookkeeper.server.Main --conf /etc/jellydb/bk_server.conf ;;
+candybox) exec java --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED -Xms32m -Xmx160m -XX:MaxDirectMemorySize=48m -Xss256k -Dlogback.configurationFile=/etc/jellydb/logback.xml -cp '/opt/jellydb/cluster/lib/*' me.predatorray.candybox.server.CandyboxServer /etc/jellydb/candybox.properties ;;
+admin) exec java --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED -Xms32m -Xmx96m -XX:MaxDirectMemorySize=24m -Xss256k -cp '/opt/jellydb/cluster/lib/*' me.predatorray.candybox.admin.AdminApiMain ;;
+*) exit 64 ;;
+esac

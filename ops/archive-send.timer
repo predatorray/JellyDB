@@ -1,0 +1,8 @@
+[Unit]
+Description=Check archive size/hourly send trigger
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+[Install]
+WantedBy=timers.target

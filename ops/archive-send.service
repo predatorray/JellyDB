@@ -1,0 +1,11 @@
+[Unit]
+Description=Batch and send email-only archive
+After=network-online.target
+[Service]
+Type=oneshot
+User=jellydb
+EnvironmentFile=/etc/jellydb/archive.env
+ExecStart=/opt/jellydb/bin/archive-send
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/jellydb/archive

@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>JellyDB browser example</title>
+<style>body{font:16px system-ui;max-width:50rem;margin:3rem auto;padding:1rem}input{width:28rem}pre{white-space:pre-wrap}</style>
+<h1>Public, temporary, experimental storage</h1>
+<p>Anyone knowing a namespace address may read, overwrite or delete its contents. Use synthetic data.</p>
+<p>Use a configured JellyDB API or the local test server. Namespace renewal is handled atomically by Candybox.</p>
+<label>API base <input id="base" value="http://127.0.0.1:8080"></label> <button id="run">Run example</button>
+<pre id="output"></pre>
+<script type="module">
+import {createNamespace, storageExample} from './storage.js';
+document.querySelector('#run').onclick = async () => {
+  const output = document.querySelector('#output');
+  try {
+    const base = document.querySelector('#base').value;
+    const namespace = await createNamespace(base);
+    sessionStorage.setItem('jellydb-example', namespace.id);
+    const store = storageExample(base, namespace.id);
+    await store.setJSON('', null);
+    await store.setItem('こんにちは/%', ' encrypted strings can go here ');
+    output.textContent = JSON.stringify({namespace, emptyKeyJSON: await store.getJSON(''), keys: await Array.fromAsync(store.keys())}, null, 2);
+  } catch (error) { output.textContent = String(error); }
+};
+</script></html>

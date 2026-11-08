@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+: "${ARCHIVE_FROM:?}" "${ARCHIVE_TO:?}" "${ARCHIVE_HOST_ID:?}" "${SMTP_HOST:?}"
+/opt/jellydb/bin/archive.py batch --sender "$ARCHIVE_FROM" --recipient "$ARCHIVE_TO" --host-id "$ARCHIVE_HOST_ID" --max-mime-bytes "${SMTP_MAX_MIME_BYTES:-8388608}"
+/opt/jellydb/bin/archive.py send --smtp-host "$SMTP_HOST" --smtp-port "${SMTP_PORT:-587}"
+/opt/jellydb/bin/archive.py prune
+/opt/jellydb/bin/archive.py status

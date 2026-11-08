@@ -1,0 +1,92 @@
+dev.jellydb:jellydb:jar:0.1.0-SNAPSHOT
++- me.predatorray.candybox:candybox-client:jar:0.2.0-jelly-c6392d5:compile
+|  +- me.predatorray.candybox:candybox-common:jar:0.2.0-jelly-c6392d5:compile
+|  +- me.predatorray.candybox:candybox-protocol:jar:0.2.0-jelly-c6392d5:compile
+|  +- me.predatorray.candybox:candybox-coordination:jar:0.2.0-jelly-c6392d5:compile
+|  \- org.slf4j:slf4j-api:jar:2.0.13:compile
++- io.netty:netty-codec-http:jar:4.1.118.Final:compile
+|  +- io.netty:netty-common:jar:4.1.118.Final:compile
+|  +- io.netty:netty-buffer:jar:4.1.118.Final:compile
+|  +- io.netty:netty-transport:jar:4.1.118.Final:compile
+|  |  \- io.netty:netty-resolver:jar:4.1.118.Final:compile
+|  +- io.netty:netty-codec:jar:4.1.118.Final:compile
+|  \- io.netty:netty-handler:jar:4.1.118.Final:compile
+|     \- io.netty:netty-transport-native-unix-common:jar:4.1.118.Final:compile
++- com.fasterxml.jackson.core:jackson-databind:jar:2.18.2:compile
+|  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.18.2:compile
+|  \- com.fasterxml.jackson.core:jackson-core:jar:2.18.2:compile
++- ch.qos.logback:logback-classic:jar:1.5.6:compile
+|  \- ch.qos.logback:logback-core:jar:1.5.6:compile
++- org.apache.curator:curator-framework:jar:5.6.0:compile
+|  \- org.apache.curator:curator-client:jar:5.6.0:compile
++- org.apache.curator:curator-recipes:jar:5.6.0:compile
++- org.apache.zookeeper:zookeeper:jar:3.9.2:compile
+|  +- org.apache.zookeeper:zookeeper-jute:jar:3.9.2:compile
+|  +- org.apache.yetus:audience-annotations:jar:0.12.0:compile
+|  +- io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.1.118.Final:compile
+|  |  \- io.netty:netty-transport-classes-epoll:jar:4.1.118.Final:compile
+|  +- io.netty:netty-tcnative-boringssl-static:jar:2.0.70.Final:compile
+|  |  +- io.netty:netty-tcnative-classes:jar:2.0.70.Final:compile
+|  |  +- io.netty:netty-tcnative-boringssl-static:jar:linux-x86_64:2.0.70.Final:compile
+|  |  +- io.netty:netty-tcnative-boringssl-static:jar:linux-aarch_64:2.0.70.Final:compile
+|  |  +- io.netty:netty-tcnative-boringssl-static:jar:osx-x86_64:2.0.70.Final:compile
+|  |  +- io.netty:netty-tcnative-boringssl-static:jar:osx-aarch_64:2.0.70.Final:compile
+|  |  \- io.netty:netty-tcnative-boringssl-static:jar:windows-x86_64:2.0.70.Final:compile
+|  \- commons-io:commons-io:jar:2.11.0:compile
++- org.junit.jupiter:junit-jupiter:jar:5.10.2:test
+|  +- org.junit.jupiter:junit-jupiter-api:jar:5.10.2:test
+|  |  +- org.opentest4j:opentest4j:jar:1.3.0:test
+|  |  +- org.junit.platform:junit-platform-commons:jar:1.10.2:test
+|  |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+|  +- org.junit.jupiter:junit-jupiter-params:jar:5.10.2:test
+|  \- org.junit.jupiter:junit-jupiter-engine:jar:5.10.2:test
+|     \- org.junit.platform:junit-platform-engine:jar:1.10.2:test
++- me.predatorray.candybox:candybox-server:jar:0.2.0-jelly-c6392d5:test
+|  +- me.predatorray.candybox:candybox-lsm:jar:0.2.0-jelly-c6392d5:test
+|  +- me.predatorray.candybox:candybox-bookkeeper:jar:0.2.0-jelly-c6392d5:test
+|  \- org.apache.bookkeeper:bookkeeper-server:jar:4.17.1:test
+|     +- org.apache.bookkeeper:bookkeeper-common:jar:4.17.1:test
+|     |  +- org.apache.bookkeeper.stats:bookkeeper-stats-api:jar:4.17.1:test
+|     |  +- org.apache.bookkeeper:cpu-affinity:jar:4.17.1:test
+|     |  +- org.jctools:jctools-core:jar:2.1.2:test
+|     |  +- io.netty.incubator:netty-incubator-transport-native-io_uring:jar:linux-x86_64:0.0.25.Final:test
+|     |  |  \- io.netty.incubator:netty-incubator-transport-classes-io_uring:jar:0.0.25.Final:test
+|     |  \- io.netty.incubator:netty-incubator-transport-native-io_uring:jar:linux-aarch_64:0.0.25.Final:test
+|     +- org.apache.bookkeeper:bookkeeper-common-allocator:jar:4.17.1:test
+|     +- org.apache.bookkeeper:bookkeeper-proto:jar:4.17.1:test
+|     |  \- com.google.protobuf:protobuf-java:jar:3.22.3:test
+|     +- org.apache.bookkeeper:bookkeeper-slogger-slf4j:jar:4.17.1:test
+|     +- org.apache.bookkeeper:bookkeeper-slogger-api:jar:4.17.1:test
+|     +- org.apache.bookkeeper:bookkeeper-tools-framework:jar:4.17.1:test
+|     +- org.apache.bookkeeper:native-io:jar:4.17.1:test
+|     +- org.rocksdb:rocksdbjni:jar:7.10.2:test
+|     +- io.netty:netty-transport-native-epoll:jar:linux-aarch_64:4.1.118.Final:test
+|     +- org.apache.bookkeeper.http:http-server:jar:4.17.1:test
+|     +- org.apache.bookkeeper:circe-checksum:jar:4.17.1:test
+|     +- commons-cli:commons-cli:jar:1.2:test
+|     +- commons-codec:commons-codec:jar:1.6:test
+|     +- org.apache.commons:commons-lang3:jar:3.6:test
+|     +- org.apache.commons:commons-collections4:jar:4.1:test
+|     +- org.bouncycastle:bc-fips:jar:1.0.2.4:test
+|     +- com.beust:jcommander:jar:1.82:test
+|     +- org.apache.httpcomponents:httpclient:jar:4.5.13:test
+|     |  +- org.apache.httpcomponents:httpcore:jar:4.4.13:test
+|     |  \- commons-logging:commons-logging:jar:1.2:test
+|     +- io.reactivex.rxjava3:rxjava:jar:3.0.1:test
+|     |  \- org.reactivestreams:reactive-streams:jar:1.0.3:test
+|     +- com.carrotsearch:hppc:jar:0.9.1:test
+|     +- org.apache.logging.log4j:log4j-core:jar:2.18.0:test
+|     |  \- org.apache.logging.log4j:log4j-api:jar:2.18.0:test
+|     +- org.apache.logging.log4j:log4j-slf4j-impl:jar:2.18.0:test
+|     \- commons-configuration:commons-configuration:jar:1.10:test
+|        \- commons-lang:commons-lang:jar:2.6:test
+\- org.apache.curator:curator-test:jar:5.6.0:test
+   +- io.dropwizard.metrics:metrics-core:jar:3.2.5:test
+   +- org.xerial.snappy:snappy-java:jar:1.1.10.4:test
+   \- com.google.guava:guava:jar:32.0.0-jre:compile
+      +- com.google.guava:failureaccess:jar:1.0.1:compile
+      +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+      +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+      +- org.checkerframework:checker-qual:jar:3.33.0:compile
+      +- com.google.errorprone:error_prone_annotations:jar:2.18.0:compile
+      \- com.google.j2objc:j2objc-annotations:jar:2.8:compile
