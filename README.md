@@ -8,9 +8,15 @@ Implemented: bounded Netty REST, strict JSON/UTF-8/key/cursors, versioned plain/
 
 See [the testing and deployment quickstart](docs/quickstart.md) for a copyable local demo and systemd installation steps.
 
+## Linux VPS releases
+
+The [release workflow](.github/workflows/release.yml) builds versioned Linux amd64 runtime archives with checksums and a configuration-preserving systemd installer. Tag pushes publish GitHub Release assets; manual workflow runs build downloadable previews without publishing. Start with a release candidate such as `v0.1.0-rc.1`; v0 releases are marked experimental prereleases.
+
+See [release options, tag commands and VPS installation](docs/releases.md). Recommended: tarball + host Java + systemd. It installs the HTTP service and requires an existing private Candybox/ZooKeeper/BookKeeper cluster; the JRE and storage servers are not bundled.
+
 ## Build and run
 
-Build prerequisites: macOS or Linux/WSL, Make, JDK 17+ (including javac), Maven 3.9+, Git and Python 3. Runtime packaging uses Python’s standard library; GNU tar is not required. The production systemd deployment targets Linux. No npm library or frontend build is required.
+Build prerequisites: macOS or Linux/WSL, Make, JDK 17+ (including javac), Maven 3.9+, Git and Python 3.9+. Runtime packaging uses Python’s standard library; GNU tar is not required. The production systemd deployment targets Linux. No npm library or frontend build is required.
 
 ```sh
 make build

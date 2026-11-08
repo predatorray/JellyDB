@@ -81,6 +81,9 @@ Liveness alone is insufficient. Backend/owner failures produce 503; do not blind
 
 ## 4. Install the HTTP runtime under systemd
 
+For the simpler release-based path (no build tools on the VPS), download a versioned GitHub Release tarball and checksums, verify and extract it, then run `sudo python3 bin/install-http.py`. See [releases.md](releases.md) for exact commands, upgrade behavior and prerequisites. The installer preserves configuration and does not start services. The manual installation below remains available for development build archives.
+
+
 Build off-host and copy only `target/jellydb-runtime.tar.gz` to the VM. Install a Java 17+ runtime and Python 3 on the VM. The following example installs **only the HTTP service**, assuming the private cluster above already works. Run user/directory setup once; choose a new release directory for later upgrades.
 
 ```sh

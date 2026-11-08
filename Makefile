@@ -19,6 +19,7 @@ help:
 	  'make test-java     Run Java and real-storage integration tests' \
 	  'make test-tools    Run archive and portable-packaging tests' \
 	  'make package       Repackage existing build outputs without rerunning Maven' \
+	  'make release TAG=v0.1.0-rc.1  Bundle tested Linux amd64 VPS release assets' \
 	  'make demo          Start the temporary real-storage fixture (PORT=8080)' \
 	  'make demo-fake     Start the test-only in-memory fixture (PORT=8080)' \
 	  'make examples      Serve the browser example (EXAMPLES_PORT=8081)' \
@@ -59,3 +60,10 @@ run:
 
 clean:
 	"$(MVN)" -B -ntp clean
+
+# Versioned release assets only; publishing is performed by GitHub Actions on a tag push.
+TAG ?=
+RELEASE_FLAGS ?=
+.PHONY: release
+release:
+	"$(PYTHON)" scripts/release.py --tag "$(TAG)" $(RELEASE_FLAGS)
